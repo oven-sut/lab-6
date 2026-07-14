@@ -3,19 +3,20 @@ var url = require('url');
 var fs = require('fs');
 
 http.createServer(function (req, res) {
-    var q = url.parse(req.url, true);
-    var query = q.query;
-    if (q.pathname !== '/hello.htm' || query.name === undefined) {
-        res.end();
-        return;
+    var urlObj = url.parse(req.url, true);
+    var data = urlObj.query;
+    if (urlObj.pathname != "/hello.htm" || data.name == undefined) {
+        return res.end();
     }
-    var output = 'name: ' + query.name + '\n' +
-                 'subject: ' + query.subject + '\n' +
-                 'score: ' + query.score + '\n';
-    fs.writeFile('hello.htm', output, function (err) {
+    var txt = "name: " + data.name + "<br>" +
+              "subject: " + data.subject + "<br>" +
+              "score: " + data.score + "<br>";
+    fs.writeFile("hello.htm", txt, function (err) {
         if (err) throw err;
+        console.log("Saved!");
     });
-    res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.write(output);
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.write(txt);
     res.end();
 }).listen(3333);
+console.log("http://localhost:3333");
